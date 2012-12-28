@@ -9,11 +9,10 @@ Welcome to robot_dashboard's documentation!
 Contents:
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 4
 
     dashboard
     widgets
-    util
 
 Indices and tables
 ==================

@@ -36,7 +36,7 @@ from .icon_tool_button import IconToolButton
 class BatteryDashWidget(IconToolButton):
     """
     A Widget which displays incremental battery state, including a status tip.
-    To use this widget simply call `update_perc` and `update_time` to change the displayed charge percentage and time remaining, respectively.
+    To use this widget simply call :func:`update_perc` and :func:`update_time` to change the displayed charge percentage and time remaining, respectively.
 
     :param name: The name of this widget
     :type name: str

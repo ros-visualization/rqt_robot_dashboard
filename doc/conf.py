@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'robot_dashboard'
-copyright = u'2012, Ze\'ev Klapow'
+copyright = u'2012, Willow Garage'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

@@ -48,15 +48,17 @@ class IconToolButton(QToolButton):
 
     :param name: name of the object
     :type name: str
-    :param icons: A list of lists of strings to create icons for the states of this button.
+    :param icons: A list of lists of strings to create icons for the states of this button.\
     If only one is supplied then ok, warn, error, stale icons will be created with overlays
+
     :type icons: list
     :param clicked_icons: A list of clicked state icons. len must equal icons
     :type clicked_icons: list
     :param suppress_overlays: if false and there is only one icon path supplied
     :type suppress_overlays: bool
-    :param icon_paths: list of lists of package and subdirectory in the form
+    :param icon_paths: list of lists of package and subdirectory in the form\
     ['package name', 'subdirectory'] example ['rqt_pr2_dashboard', 'images/svg']
+
     :type icon_paths: list of lists of strings
     """
     state_changed = Signal(int)
@@ -106,7 +108,7 @@ class IconToolButton(QToolButton):
 
         :raises IndexError: if ``icons`` is not a list of lists of strings
 
-        :param icons: A list of lists of strings to create icons for the states of this button.
+        :param icons: A list of lists of strings to create icons for the states of this button.\
         If only one is supplied then ok, warn, error, stale icons will be created with overlays
         :type icons: list
         :param clicked_icons: A list of clicked state icons. len must equal icons

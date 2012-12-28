@@ -20,6 +20,10 @@
   <run_depend>rqt_gui_py</run_depend>
   <run_depend>rqt_nav_view</run_depend>
   <run_depend>rqt_robot_monitor</run_depend>
+
+  <export>
+    <rosdoc config="rosdoc.yaml" />
+  </export>
 </package>
 
 
