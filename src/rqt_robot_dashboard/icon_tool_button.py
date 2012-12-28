@@ -101,6 +101,13 @@ class IconToolButton(QToolButton):
         else:
             raise IndexError("%s update_state received invalid state: %s" % (self.name, state))
 
+    @property
+    def state(self):
+        """
+        Read-only accessor for the widgets current state.
+        """
+        return self.__state
+
     def set_icon_lists(self, icons, clicked_icons=None, suppress_overlays=False):
         """
         Sets up the icon lists for the button states.
