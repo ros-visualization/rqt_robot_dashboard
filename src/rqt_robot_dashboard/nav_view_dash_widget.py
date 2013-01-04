@@ -44,8 +44,9 @@ class NavViewDashWidget(IconToolButton):
     :type name: str
     """
     def __init__(self, context, name='NavView', icon_paths=[]):
-        super(NavViewDashWidget, self).__init__(name, icons=[['ic-navigation.svg']], suppress_overlays=True, icon_paths=icon_paths)
+        super(NavViewDashWidget, self).__init__(name, icons=[['bg-grey.svg', 'ic-navigation.svg']], suppress_overlays=True, icon_paths=icon_paths)
         self.context = context
+        self.update_state(0)
 
         self._nav_view = None
 
