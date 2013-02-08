@@ -130,6 +130,7 @@ class MonitorDashWidget(IconToolButton):
                 self._monitor = None
 
     def shutdown_widget(self):
+        self._stall_timer.stop()
         if self._monitor:
             self._monitor.shutdown()
         self._diagnostics_toplevel_state_sub.unregister()
