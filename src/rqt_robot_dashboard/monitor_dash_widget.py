@@ -32,7 +32,7 @@
 
 import rospy
 from diagnostic_msgs.msg import DiagnosticStatus
-from QtCore import QMutex, QMutexLocker, QSize, QTimer
+from python_qt_binding.QtCore import QMutex, QMutexLocker, QSize, QTimer
 from rqt_robot_monitor.robot_monitor import RobotMonitorWidget
 from .icon_tool_button import IconToolButton
 

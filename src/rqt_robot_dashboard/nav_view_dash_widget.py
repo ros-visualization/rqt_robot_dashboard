@@ -30,7 +30,9 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from rqt_nav_view import NavViewWidget
+from python_qt_binding.QtCore import QMutex, QMutexLocker, QSize
+from rqt_nav_view.nav_view import NavViewWidget
+
 from .icon_tool_button import IconToolButton
 
 
@@ -38,27 +40,42 @@ class NavViewDashWidget(IconToolButton):
     """
     A widget which launches a nav_view widget in order to view and interact with the ROS nav stack
 
-    :param context: The plugin context in which to dsiplay the nav_view
-    :type context: qt_gui.plugin_context.PluginContext
-    :param name: The widgets name
-    :type name: str
+    :param context: The plugin context in which to dsiplay the nav_view, ''qt_gui.plugin_context.PluginContext''
+    :param name: The widgets name, ''str''
     """
-    def __init__(self, context, name='NavView', icon_paths=[]):
-        super(NavViewDashWidget, self).__init__(name, icons=[['bg-grey.svg', 'ic-navigation.svg']], suppress_overlays=True, icon_paths=icon_paths)
+    def __init__(self, context, name='NavView', icon_paths=None):
+        self._icons = [['bg-grey.svg', 'ic-navigation.svg']]
+        super(NavViewDashWidget, self).__init__(name, icons=self._icons, suppress_overlays=True, icon_paths=icon_paths)
         self.context = context
         self.update_state(0)
+        self.setFixedSize(self._icons[0].actualSize(QSize(50, 30)))
 
-        self._nav_view = None
+        self._navview = None
+        self._navview_shown = False
+        self.clicked.connect(self._show_navview)
+        self._show_mutex = QMutex()
 
-        self.clicked.connect(self._show_nav_view)
+    def _show_navview(self):
+        with QMutexLocker(self._show_mutex):
+            if self._navview is None:
+                self._navview = NavViewWidget()
+            try:
+                if self._navview_shown:
+                    self.context.remove_widget(self._navview)
+                    self._navview_shown = not self._navview_shown
+                else:
+                    self.context.add_widget(self._navview)
+                    self._navview_shown = not self._navview_shown
+            except Exception:
+                self._navview_shown = not self._navview_shown
+                self._show_navview()
 
-    def _show_nav_view(self):
-        if not self._nav_view:
-            #TODO: There should be some way to customize the params for nav_view creation
-            self._nav_view = NavViewWidget()
-            self._nav_view.destroyed.connect(self._view_closed)
+    def shutdown_widget(self):
+        if self._navview:
+            self._navview.close()
 
-        self.context.add_widget(self._nav_view)
+    def save_settings(self, plugin_settings, instance_settings):
+        self._navview.save_settings(plugin_settings, instance_settings)
 
-    def _view_closed(self):
-        self._nav_view = None
+    def restore_settings(self, plugin_settings, instance_settings):
+        self._navview.restore_settings(plugin_settings, instance_settings)
