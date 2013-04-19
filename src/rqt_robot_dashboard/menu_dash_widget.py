@@ -30,6 +30,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+# 4/18/13 Isaac Shouldn't this use python_qt_binding.QtGui instead of calling directly QtGui?
 from QtGui import QMenu, QToolButton
 from .icon_tool_button import IconToolButton
 
