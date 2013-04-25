@@ -77,4 +77,8 @@ class BatteryDashWidget(IconToolButton):
             self.setIcon(self._icons[state])
 
     def update_time(self, value):
-        self.setToolTip("%s%% remaining" % value)
+        try:
+            fval = float(value)
+            self.setToolTip("%s: %.2f%% remaining" % (self.name, fval))
+        except ValueError:
+            self.setToolTip("%s: %s%% remaining" % (self.name, value))
