@@ -41,19 +41,26 @@ class MonitorDashWidget(IconToolButton):
     """
     A widget which brings up the rqt_robot_monitor.
 
+    Times out after certain period of time (set as 5 sec as of Apr 2013)
+    without receiving diagnostics msg ('/diagnostics_toplevel_state' of
+    DiagnosticStatus type), status becomes as 'stale'.
+
     :param context: The plugin context to create the monitor in.
     :type context: qt_gui.plugin_context.PluginContext
     """
     def __init__(self, context, icon_paths=[]):
         self._graveyard = []
         ok_icon = ['bg-green.svg', 'ic-diagnostics.svg']
-        warn_icon = ['bg-yellow.svg', 'ic-diagnostics.svg', 'ol-warn-badge.svg']
+        warn_icon = ['bg-yellow.svg', 'ic-diagnostics.svg',
+                     'ol-warn-badge.svg']
         err_icon = ['bg-red.svg', 'ic-diagnostics.svg', 'ol-err-badge.svg']
-        stale_icon = ['bg-grey.svg', 'ic-diagnostics.svg', 'ol-stale-badge.svg']
+        stale_icon = ['bg-grey.svg', 'ic-diagnostics.svg',
+                      'ol-stale-badge.svg']
 
         icons = [ok_icon, warn_icon, err_icon, stale_icon]
 
-        super(MonitorDashWidget, self).__init__('MonitorWidget', icons, icon_paths=icon_paths)
+        super(MonitorDashWidget, self).__init__('MonitorWidget', icons,
+                                                icon_paths=icon_paths)
 
         self.setFixedSize(self._icons[0].actualSize(QSize(50, 30)))
 
@@ -69,7 +76,9 @@ class MonitorDashWidget(IconToolButton):
         self._monitor_shown = False
         self.setToolTip('Diagnostics')
 
-        self._diagnostics_toplevel_state_sub = rospy.Subscriber('diagnostics_toplevel_state', DiagnosticStatus, self.toplevel_state_callback)
+        self._diagnostics_toplevel_state_sub = rospy.Subscriber(
+                                'diagnostics_toplevel_state',
+                                DiagnosticStatus, self.toplevel_state_callback)
         self._top_level_state = -1
         self._stall_timer = QTimer()
         self._stall_timer.timeout.connect(self._stalled)
@@ -98,7 +107,8 @@ class MonitorDashWidget(IconToolButton):
         self._is_stale = True
         self.update_state(3)
         self._top_level_state = 3
-        self.setToolTip("Diagnostics: Stale\nNo message received on dashboard_agg in the last 5 seconds")
+        self.setToolTip("Diagnostics: Stale\nNo message received on " +
+                        "dashboard_agg in the last 5 seconds")
 
     def _show_monitor(self):
         with QMutexLocker(self._show_mutex):
@@ -108,15 +118,18 @@ class MonitorDashWidget(IconToolButton):
                     self._monitor_close()
                     self._monitor_shown = False
                 else:
-                    self._monitor = RobotMonitorWidget(self.context, 'diagnostics_agg')
+                    self._monitor = RobotMonitorWidget(self.context,
+                                                       'diagnostics_agg')
                     if self._plugin_settings:
-                        self._monitor.restore_settings(self._plugin_settings, self._instance_settings)
+                        self._monitor.restore_settings(self._plugin_settings,
+                                                       self._instance_settings)
                     self.context.add_widget(self._monitor)
                     self._monitor_shown = True
             except Exception:
                 if self._monitor_shown == False:
                     raise
-                #  TODO when closeEvents is available fix this hack (It ensures the button will toggle correctly)
+                #TODO: when closeEvents is available fix this hack
+                # (It ensures the button will toggle correctly)
                 self._monitor_shown = False
                 self._show_monitor()
 
@@ -124,7 +137,8 @@ class MonitorDashWidget(IconToolButton):
         if self._monitor_shown:
             with QMutexLocker(self._close_mutex):
                 if self._plugin_settings:
-                    self._monitor.save_settings(self._plugin_settings, self._instance_settings)
+                    self._monitor.save_settings(self._plugin_settings,
+                                                self._instance_settings)
                 self._monitor.shutdown()
                 self._monitor.close()
                 self._graveyard.append(self._monitor)
@@ -138,7 +152,8 @@ class MonitorDashWidget(IconToolButton):
 
     def save_settings(self, plugin_settings, instance_settings):
         if self._monitor_shown:
-            self._monitor.save_settings(self._plugin_settings, self._instance_settings)
+            self._monitor.save_settings(self._plugin_settings,
+                                        self._instance_settings)
 
     def restore_settings(self, plugin_settings, instance_settings):
         self._plugin_settings = plugin_settings
