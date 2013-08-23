@@ -105,8 +105,9 @@ class IconHelper(object):
     """
     Helper class to easily access images and build QIcons out of lists of file names
     """
-    def __init__(self, paths=None):
+    def __init__(self, paths=None, name="IconHelper"):
         self._image_paths = paths if paths else []
+        self._name = name
 
     def add_image_path(self, path):
         """
@@ -203,3 +204,47 @@ class IconHelper(object):
         for name in image_name_list:
             found_list.append(self.find_image(name))
         return self.make_icon(found_list, mode, state)
+
+    def set_icon_lists(self, icons, clicked_icons=None, suppress_overlays=False):
+        """
+        Sets up the icon lists for the button states.
+        There must be one index in icons for each state.
+        
+        :raises IndexError: if ``icons`` is not a list of lists of strings
+        
+        :param icons: A list of lists of strings to create icons for the states of this button.\
+        If only one is supplied then ok, warn, error, stale icons will be created with overlays
+        :type icons: list
+        :param clicked_icons: A list of clicked state icons. len must equal icons
+        :type clicked_icons: list
+        :param suppress_overlays: if false and there is only one icon path supplied
+        :type suppress_overlays: bool
+        """
+        if clicked_icons is not None and len(icons) != len(clicked_icons):
+            rospy.logerr("%s: icons and clicked states are unequal" % self._name)
+            icons = clicked_icons = ['ic-missing-icon.svg']
+        if not (type(icons) is list and type(icons[0]) is list and type(icons[0][0] is str)):
+            raise(IndexError("icons must be a list of lists of strings"))
+        if len(icons) <= 0:
+            rospy.logerr("%s: Icons not supplied" % self._name)
+            icons = clicked_icons = ['ic-missing-icon.svg']
+        if len(icons) == 1 and suppress_overlays == False:
+            if icons[0][0][-4].lower() == '.svg':
+                icons.append(icons[0] + ['ol-warn-badge.svg'])
+                icons.append(icons[0] + ['ol-err-badge.svg'])
+                icons.append(icons[0] + ['ol-stale-badge.svg'])
+            else:
+                icons.append(icons[0] + ['warn-overlay.png'])
+                icons.append(icons[0] + ['err-overlay.png'])
+                icons.append(icons[0] + ['stale-overlay.png'])
+        if clicked_icons is None:
+            clicked_icons = []
+            for name in icons:
+                clicked_icons.append(name + ['ol-click.svg'])
+        icons_conv = []
+        for icon in icons:
+            icons_conv.append(self.build_icon(icon))
+        clicked_icons_conv = []
+        for icon in clicked_icons:
+            clicked_icons_conv.append(self.build_icon(icon))
+        return (icons_conv, clicked_icons_conv)

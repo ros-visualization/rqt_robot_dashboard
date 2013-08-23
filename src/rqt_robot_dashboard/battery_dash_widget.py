@@ -38,15 +38,16 @@ from python_qt_binding.QtGui import QIcon, QLabel
 from .util import IconHelper
 
 class BatteryDashWidget(QLabel):
-    
-    state_changed = Signal(int)
     """
     A Widget which displays incremental battery state, including a status tip.
-    To use this widget simply call :func:`update_perc` and :func:`update_time` to change the displayed charge percentage and time remaining, respectively.
+    To use this widget simply call :func:`update_perc` and :func:`update_time`
+    to change the displayed charge percentage and time remaining, respectively.
 
     :param name: The name of this widget
     :type name: str
     """
+    state_changed = Signal(int)
+
     def __init__(self, name='Battery', icons=None, charge_icons=None, icon_paths=None, suppress_overlays=False):
         super(BatteryDashWidget, self).__init__()
         if icons == None:
@@ -59,8 +60,10 @@ class BatteryDashWidget(QLabel):
         paths = []
         for path in icon_paths:
             paths.append(os.path.join(rospkg.RosPack().get_path(path[0]), path[1]))
-        self._icon_helper = IconHelper(paths)
-        self.set_icon_lists(icons, charge_icons, suppress_overlays)
+        self._icon_helper = IconHelper(paths, name)
+        converted_icons = self._icon_helper.set_icon_lists(icons, charge_icons, suppress_overlays)
+        self._icons = converted_icons[0]
+        self._charge_icons = converted_icons[1]
         self._name = name
         self._charging = False
         self.__state = 0
@@ -74,62 +77,20 @@ class BatteryDashWidget(QLabel):
             self.setPixmap(self._charge_icons[state].pixmap(QSize(60, 100)))
         else:
             self.setPixmap(self._icons[state].pixmap(QSize(60, 100)))
-    
+
     @property
     def state(self):
         """
         Read-only accessor for the widgets current state.
         """
         return self.__state
-        
-    def set_icon_lists(self, icons, charge_icons=None, suppress_overlays=False):
-        """
-        Sets up the icon lists for the button states.
-        There must be one index in icons for each state.
-        
-        :raises IndexError: if ``icons`` is not a list of lists of strings
-        
-        :param icons: A list of lists of strings to create icons for the states of this button.\
-        If only one is supplied then ok, warn, error, stale icons will be created with overlays
-        :type icons: list
-        :param charge_icons: A list of clicked state icons. len must equal icons
-        :type charge_icons: list
-        :param suppress_overlays: if false and there is only one icon path supplied
-        :type suppress_overlays: bool
-        """
-        if charge_icons is not None and len(icons) != len(charge_icons):
-            rospy.logerr("%s: icons and clicked states are unequal" % self._name)
-            icons = charge_icons = ['ic-missing-icon.svg']
-        if not (type(icons) is list and type(icons[0]) is list and type(icons[0][0] is str)):
-            raise(IndexError("icons must be a list of lists of strings"))
-        if len(icons) <= 0:
-            rospy.logerr("%s: Icons not supplied" % self._name)
-            icons = charge_icons = ['ic-missing-icon.svg']
-        if len(icons) == 1 and suppress_overlays == False:
-            if icons[0][0][-4].lower() == '.svg':
-                icons.append(icons[0] + ['ol-warn-badge.svg'])
-                icons.append(icons[0] + ['ol-err-badge.svg'])
-                icons.append(icons[0] + ['ol-stale-badge.svg'])
-            else:
-                icons.append(icons[0] + ['warn-overlay.png'])
-                icons.append(icons[0] + ['err-overlay.png'])
-                icons.append(icons[0] + ['stale-overlay.png'])
-        if charge_icons is None:
-            charge_icons = []
-            for name in icons:
-                charge_icons.append(name + ['ol-click.svg'])
-        self._icons = []
-        for icon in icons:
-            self._icons.append(self._icon_helper.build_icon(icon))
-        self._charge_icons = []
-        for icon in charge_icons:
-            self._charge_icons.append(self._icon_helper.build_icon(icon))
 
     def set_charging(self, value):
         self._charging = value
 
     def update_perc(self, val):
-        """Update the displayed battery percentage.
+        """
+        Update the displayed battery percentage.
         The default implementation of this method displays in 20% increments
 
         :param val: The new value to be displayed.

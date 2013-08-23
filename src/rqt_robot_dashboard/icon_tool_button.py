@@ -78,12 +78,15 @@ class IconToolButton(QToolButton):
         paths = []
         for path in icon_paths:
             paths.append(os.path.join(rospkg.RosPack().get_path(path[0]), path[1]))
-        self.icon_helper = IconHelper(paths)
+        self.icon_helper = IconHelper(paths, name)
+        converted_icons = self.icon_helper.set_icon_lists(icons, clicked_icons, suppress_overlays)
+        self._icons = converted_icons[0]
+        self._clicked_icons = converted_icons[1]
 
         self.setStyleSheet('QToolButton {border: none;}')
 
         self.__state = 0
-        self.set_icon_lists(icons, clicked_icons, suppress_overlays)
+
 
     def update_state(self, state):
         """
@@ -107,50 +110,6 @@ class IconToolButton(QToolButton):
         Read-only accessor for the widgets current state.
         """
         return self.__state
-
-    def set_icon_lists(self, icons, clicked_icons=None, suppress_overlays=False):
-        """
-        Sets up the icon lists for the button states.
-        There must be one index in icons for each state.
-
-        :raises IndexError: if ``icons`` is not a list of lists of strings
-
-        :param icons: A list of lists of strings to create icons for the states of this button.\
-        If only one is supplied then ok, warn, error, stale icons will be created with overlays
-        :type icons: list
-        :param clicked_icons: A list of clicked state icons. len must equal icons
-        :type clicked_icons: list
-        :param suppress_overlays: if false and there is only one icon path supplied
-        :type suppress_overlays: bool
-
-        """
-        if clicked_icons is not None and len(icons) != len(clicked_icons):
-            rospy.logerr("%s: icons and clicked states are unequal" % self.name)
-            icons = clicked_icons = ['ic-missing-icon.svg']
-        if not (type(icons) is list and type(icons[0]) is list and type(icons[0][0] is str)):
-            raise(IndexError("icons must be a list of lists of strings"))
-        if len(icons) <= 0:
-            rospy.logerr("%s: Icons not supplied" % self.name)
-            icons = clicked_icons = ['ic-missing-icon.svg']
-        if len(icons) == 1 and suppress_overlays == False:
-            if icons[0][0][-4].lower() == '.svg':
-                icons.append(icons[0] + ['ol-warn-badge.svg'])
-                icons.append(icons[0] + ['ol-err-badge.svg'])
-                icons.append(icons[0] + ['ol-stale-badge.svg'])
-            else:
-                icons.append(icons[0] + ['warn-overlay.png'])
-                icons.append(icons[0] + ['err-overlay.png'])
-                icons.append(icons[0] + ['stale-overlay.png'])
-        if clicked_icons is None:
-            clicked_icons = []
-            for name in icons:
-                clicked_icons.append(name + ['ol-click.svg'])
-        self._icons = []
-        for icon in icons:
-            self._icons.append(self.icon_helper.build_icon(icon))
-        self._clicked_icons = []
-        for icon in clicked_icons:
-            self._clicked_icons.append(self.icon_helper.build_icon(icon))
 
     def _update_state(self, state):
         if self.isDown():
