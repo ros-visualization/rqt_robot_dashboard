@@ -2,6 +2,10 @@
 Changelog for package rqt_robot_dashboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.0 (2013-08-28)
+------------------
+* fix issues with battery widget (`#40 <https://github.com/ros-visualization/rqt_robot_plugins/issues/40>`_, `#42 <https://github.com/ros-visualization/rqt_robot_plugins/issues/42>`_)
+
 0.2.16 (2013-07-09)
 -------------------
 * First public release for Hydro
