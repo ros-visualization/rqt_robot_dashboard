@@ -30,10 +30,11 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from rosgraph_msgs.msg import Log
 import rospy
 from python_qt_binding.QtCore import QMutex, QMutexLocker, QSize, QTimer
 
-from rqt_console.console_subscriber import ConsoleSubscriber
+from rqt_console.console import Console
 from rqt_console.console_widget import ConsoleWidget
 from rqt_console.message_data_model import MessageDataModel
 from rqt_console.message_proxy_model import MessageProxyModel
@@ -65,8 +66,9 @@ class ConsoleDashWidget(IconToolButton):
         self._proxymodel = MessageProxyModel()
         self._proxymodel.setSourceModel(self._datamodel)
 
+        self._message_queue = []
         self._mutex = QMutex()
-        self._subscriber = ConsoleSubscriber(self._message_cb)
+        self._subscriber = rospy.Subscriber('/rosout_agg', Log, self._message_cb)
 
         self._console = None
         self.context = context
@@ -100,22 +102,23 @@ class ConsoleDashWidget(IconToolButton):
 
     def _insert_messages(self):
         with QMutexLocker(self._mutex):
-            msgs = self._datamodel._insert_message_queue
-            self._datamodel._insert_message_queue = []
-        self._datamodel.insert_rows(msgs)
+            msgs = self._message_queue
+            self._message_queue = []
+        if msgs:
+            self._datamodel.insert_rows(msgs)
 
         # The console may not yet be initialized or may have been closed
         # So fail silently
         try:
             self.update_rosout()
-            self._console.update_status()
         except:
             pass
 
-    def _message_cb(self, msg):
-        if not self._datamodel._paused:
+    def _message_cb(self, log_msg):
+        if not self._console._paused:
+            msg = Console.convert_rosgraph_log_message(log_msg)
             with QMutexLocker(self._mutex):
-                self._datamodel._insert_message_queue.append(msg)
+                self._message_queue.append(msg)
 
     def update_rosout(self):
         summary_dur = 30.0
@@ -163,7 +166,7 @@ class ConsoleDashWidget(IconToolButton):
         if self._console:
             self._console.cleanup_browsers_on_close()
         if self._subscriber:
-            self._subscriber.unsubscribe_topic()
+            self._subscriber.unregister()
         self._timer.stop()
 
     def save_settings(self, plugin_settings, instance_settings):
