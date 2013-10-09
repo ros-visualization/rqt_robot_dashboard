@@ -31,6 +31,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from rosgraph_msgs.msg import Log
+import rospkg
 import rospy
 from python_qt_binding.QtCore import QMutex, QMutexLocker, QSize, QTimer
 
@@ -79,15 +80,16 @@ class ConsoleDashWidget(IconToolButton):
         self._timer.timeout.connect(self._insert_messages)
         self._timer.start(100)
 
+        self._rospack = rospkg.RosPack()
         if self._console is None:
-            self._console = ConsoleWidget(self._proxymodel, self.minimal)
+            self._console = ConsoleWidget(self._proxymodel, self._rospack, minimal=self.minimal)
             self._console.destroyed.connect(self._console_destroyed)
         self._console_shown = False
         self.setToolTip("Rosout")
 
     def _show_console(self):
         if self._console is None:
-            self._console = ConsoleWidget(self._proxymodel, self.minimal)
+            self._console = ConsoleWidget(self._proxymodel, self._rospack, minimal=self.minimal)
             self._console.destroyed.connect(self._console_destroyed)
         try:
             if self._console_shown:

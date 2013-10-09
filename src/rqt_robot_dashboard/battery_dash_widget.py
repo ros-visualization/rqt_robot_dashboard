@@ -58,8 +58,9 @@ class BatteryDashWidget(QLabel):
                 charge_icons.append(['ic-battery-charge-%s.svg' % (x * 20)])
         icon_paths = (icon_paths if icon_paths else []) + [['rqt_robot_dashboard', 'images']]
         paths = []
+        rp = rospkg.RosPack()
         for path in icon_paths:
-            paths.append(os.path.join(rospkg.RosPack().get_path(path[0]), path[1]))
+            paths.append(os.path.join(rp.get_path(path[0]), path[1]))
         self._icon_helper = IconHelper(paths, name)
         converted_icons = self._icon_helper.set_icon_lists(icons, charge_icons, suppress_overlays)
         self._icons = converted_icons[0]
