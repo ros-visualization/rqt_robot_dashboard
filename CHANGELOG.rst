@@ -2,6 +2,10 @@
 Changelog for package rqt_robot_dashboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update dashboard to work with latest rqt_console (`ros-visualization/rqt_common_plugins#186 <https://github.com/ros-visualization/rqt_common_plugins/issues/186>`_)
+
 0.3.0 (2013-08-28)
 ------------------
 * fix issues with battery widget (`#40 <https://github.com/ros-visualization/rqt_robot_plugins/issues/40>`_, `#42 <https://github.com/ros-visualization/rqt_robot_plugins/issues/42>`_)
