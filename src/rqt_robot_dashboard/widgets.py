@@ -34,7 +34,7 @@
 .. module:: widgets
     :synopsis: Widgets for the rqt_robot_dashboard.
 
-.. moduleauthor:: Ze'ev Klapow <zklapow@willowgarage.com>, Aaron Blasdel <ablasdel@willowgarage.com>
+.. moduleauthor:: Ze'ev Klapow, Aaron Blasdel <ablasdel@gmail.com>
 
 This module provides a set of standard widgets for using with the Dashboard class.
 
