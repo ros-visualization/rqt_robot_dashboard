@@ -2,6 +2,9 @@
 Changelog for package rqt_robot_dashboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.4.0 (2014-11-05)
 ------------------
 
