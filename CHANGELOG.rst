@@ -2,8 +2,8 @@
 Changelog for package rqt_robot_dashboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.3 (2016-03-08)
+------------------
 * In case where unequal length icon lists were supplied, created
   placeholder did not match spec of list of lists of strings, and caused
   subsequent conditional to fail.
