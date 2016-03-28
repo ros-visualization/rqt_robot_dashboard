@@ -34,7 +34,7 @@
 import os
 import rospkg
 from python_qt_binding.QtCore import Signal, QSize
-from python_qt_binding.QtGui import QIcon, QLabel
+from python_qt_binding.QtGui import QLabel
 from .util import IconHelper
 
 class BatteryDashWidget(QLabel):
@@ -48,25 +48,32 @@ class BatteryDashWidget(QLabel):
     """
     state_changed = Signal(int)
 
-    def __init__(self, name='Battery', icons=None, charge_icons=None, icon_paths=None, suppress_overlays=False):
+    def __init__(self, name='Battery', icons=None, charge_icons=None,
+                 icon_paths=None, suppress_overlays=False, stale_icon=None):
         super(BatteryDashWidget, self).__init__()
-        if icons == None:
+        if not icons:
             icons = []
             charge_icons = []
             for x in range(6):
                 icons.append(['ic-battery-%s.svg' % (x * 20)])
                 charge_icons.append(['ic-battery-charge-%s.svg' % (x * 20)])
+        if not stale_icon:
+            stale_icon = ['ic-battery-0.svg', 'ol-stale-battery.svg']
         icon_paths = (icon_paths if icon_paths else []) + [['rqt_robot_dashboard', 'images']]
         paths = []
         rp = rospkg.RosPack()
         for path in icon_paths:
             paths.append(os.path.join(rp.get_path(path[0]), path[1]))
         self._icon_helper = IconHelper(paths, name)
+        # Add stale icon at end of icons so that it gets composited
+        icons.append(stale_icon)
+        charge_icons.append(stale_icon) # Need icons and charge_icons length to be same
         converted_icons = self._icon_helper.set_icon_lists(icons, charge_icons, suppress_overlays)
         self._icons = converted_icons[0]
         self._charge_icons = converted_icons[1]
         self._name = name
         self._charging = False
+        self._stale = True
         self.__state = 0
         self.setMargin(5)
         self.state_changed.connect(self._update_state)
@@ -74,7 +81,9 @@ class BatteryDashWidget(QLabel):
         self.update_time(0)
 
     def _update_state(self, state):
-        if self._charging:
+        if self._stale:
+            self.setPixmap(self._icons[-1].pixmap(QSize(60, 100)))
+        elif self._charging:
             self.setPixmap(self._charge_icons[state].pixmap(QSize(60, 100)))
         else:
             self.setPixmap(self._icons[state].pixmap(QSize(60, 100)))
@@ -121,3 +130,17 @@ class BatteryDashWidget(QLabel):
             self.setToolTip("%s: %.2f%% remaining" % (self._name, fval))
         except ValueError:
             self.setToolTip("%s: %s%% remaining" % (self._name, value))
+
+    def set_stale(self):
+        """Set button to stale.
+
+        Not used by base dashboard implementation.
+        """
+        self._charging = False
+        self._stale = True
+        self.setToolTip("%s: Stale" % self._name)
+        # This triggers self.update_state which in turn will trigger _update_state
+        self.update_perc(0)
+
+    def unset_stale(self):
+        self._stale = False
