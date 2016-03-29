@@ -64,7 +64,7 @@ class TestBatteryDashWidget(unittest.TestCase):
         self._widget.update_time(val)
 
         print 'toolTip={} name={}'.format(self._widget.toolTip(),
-                                          self._widget.name)
+                                          self._widget._name)
         comp = "%s: %.2f%% remaining" % (self._WIDGET_NAME, float(val))
         tool_tip = self._widget.toolTip()
         self.assertEqual(comp, tool_tip)
