@@ -36,7 +36,7 @@
 
 import unittest
 
-from python_qt_binding.QtGui import QApplication
+from python_qt_binding.QtWidgets import QApplication
 
 from rqt_robot_dashboard.battery_dash_widget import BatteryDashWidget
 

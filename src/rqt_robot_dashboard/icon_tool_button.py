@@ -33,7 +33,7 @@
 import os
 
 from python_qt_binding.QtCore import Signal
-from python_qt_binding.QtGui import QToolButton
+from python_qt_binding.QtWidgets import QToolButton
 import rospy
 
 from .util import IconHelper

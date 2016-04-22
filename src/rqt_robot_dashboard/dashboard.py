@@ -31,7 +31,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from python_qt_binding.QtCore import QSize, Qt
-from python_qt_binding.QtGui import QToolBar, QGroupBox, QHBoxLayout
+from python_qt_binding.QtWidgets import QToolBar, QGroupBox, QHBoxLayout
 from qt_gui.plugin import Plugin
 
 

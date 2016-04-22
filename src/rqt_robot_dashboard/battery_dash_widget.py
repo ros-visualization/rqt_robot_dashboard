@@ -34,7 +34,7 @@
 import os
 import rospkg
 from python_qt_binding.QtCore import Signal, QSize
-from python_qt_binding.QtGui import QLabel
+from python_qt_binding.QtWidgets import QLabel
 from .util import IconHelper
 
 class BatteryDashWidget(QLabel):

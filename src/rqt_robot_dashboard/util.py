@@ -34,7 +34,8 @@ import os
 
 import rospy
 
-from python_qt_binding.QtGui import QIcon, QImage, QMessageBox, QPainter, QPixmap
+from python_qt_binding.QtGui import QIcon, QImage, QPainter, QPixmap
+from python_qt_binding.QtWidgets import QMessageBox
 from python_qt_binding.QtSvg import QSvgRenderer
 
 
