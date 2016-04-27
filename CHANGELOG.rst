@@ -2,6 +2,11 @@
 Changelog for package rqt_robot_dashboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support Qt 5 (in Kinetic and higher) as well as Qt 4 (in Jade and earlier) (`#101 <https://github.com/ros-visualization/rqt_robot_plugins/pull/101>`_)
+* add stale battery state, add group labels (`#100 <https://github.com/ros-visualization/rqt_robot_plugins/pull/100>`_)
+
 0.4.3 (2016-03-08)
 ------------------
 * In case where unequal length icon lists were supplied, created
