@@ -41,7 +41,7 @@ This module provides a set of standard widgets for using with the Dashboard clas
 To use them you must provide instances of them to your dashboard in its :func:`get_widgets` method. For example::
 
     from rqt_robot_dashboard.dashboard import Dashboard
-    from rqt_robot_dashboard.widgets import MonitorDashWidget, ConsoleDashWidget
+    from rqt_robot_dashboard.widgets import MonitorDashWidget, ConsoleDashWidget, BatteryDashWidget
 
     class MyDashboard(Dashboard):
         def get_widgets(self):
