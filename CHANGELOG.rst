@@ -2,8 +2,8 @@
 Changelog for package rqt_robot_dashboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.4 (2016-09-19)
+------------------
 * fix Qt 5 compatibility (`#106 <https://github.com/ros-visualization/rqt_robot_plugins/issues/106>`_)
 
 0.5.3 (2016-05-16)
