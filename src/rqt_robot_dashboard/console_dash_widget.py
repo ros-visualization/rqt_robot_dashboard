@@ -67,11 +67,16 @@ class ConsoleDashWidget(IconToolButton):
         self._proxymodel = MessageProxyModel()
         self._proxymodel.setSourceModel(self._datamodel)
 
+        self._console = None
+        self._rospack = rospkg.RosPack()
+        if self._console is None:
+            self._console = ConsoleWidget(self._proxymodel, self._rospack, minimal=self.minimal)
+            self._console.destroyed.connect(self._console_destroyed)
+
         self._message_queue = []
         self._mutex = QMutex()
         self._subscriber = rospy.Subscriber('/rosout_agg', Log, self._message_cb)
 
-        self._console = None
         self.context = context
         self.clicked.connect(self._show_console)
 
@@ -80,10 +85,6 @@ class ConsoleDashWidget(IconToolButton):
         self._timer.timeout.connect(self._insert_messages)
         self._timer.start(100)
 
-        self._rospack = rospkg.RosPack()
-        if self._console is None:
-            self._console = ConsoleWidget(self._proxymodel, self._rospack, minimal=self.minimal)
-            self._console.destroyed.connect(self._console_destroyed)
         self._console_shown = False
         self.setToolTip("Rosout")
 
