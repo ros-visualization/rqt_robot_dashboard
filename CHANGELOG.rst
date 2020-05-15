@@ -2,6 +2,13 @@
 Changelog for package rqt_robot_dashboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.8 (2020-05-14)
+------------------
+* Use setuptools instead of distutils `#4 <https://github.com/ros-visualization/rqt_robot_dashboard/issues/4>`_
+* Use package.xml format 3
+* Bump CMake version to avoid CMP0048 warning
+* Contributors: Shane Loretz, ahcorde
+
 0.5.7 (2017-04-26)
 ------------------
 
