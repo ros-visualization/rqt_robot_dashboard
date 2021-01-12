@@ -41,7 +41,7 @@ This module provides a set of standard widgets for using with the Dashboard clas
 To use them you must provide instances of them to your dashboard in its :func:`get_widgets` method. For example::
 
     from rqt_robot_dashboard.dashboard import Dashboard
-    from rqt_robot_dashboard.widgets import MonitorDashWidget, ConsoleDashWidget, BatteryDashWidget
+    from rqt_robot_dashboard.widgets import BatteryDashWidget, ConsoleDashWidget, MonitorDashWidget
 
     class MyDashboard(Dashboard):
         def get_widgets(self):
@@ -59,4 +59,6 @@ from .battery_dash_widget import BatteryDashWidget
 from .console_dash_widget import ConsoleDashWidget
 from .menu_dash_widget import MenuDashWidget
 from .monitor_dash_widget import MonitorDashWidget
-from .nav_view_dash_widget import NavViewDashWidget
+
+# rqt_nav_view has not been migrated to ROS2 yet
+# from .nav_view_dash_widget import NavViewDashWidget

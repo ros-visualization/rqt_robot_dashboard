@@ -30,9 +30,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from rosgraph_msgs.msg import Log
-import rospkg
-import rospy
+from rcl_interfaces.msg import Log
 from python_qt_binding.QtCore import QMutex, QMutexLocker, QSize, QTimer
 
 from rqt_console.console import Console
@@ -60,6 +58,7 @@ class ConsoleDashWidget(IconToolButton):
 
         super(ConsoleDashWidget, self).__init__('Console Widget', icons, icon_paths=icon_paths)
 
+        self.node = context.node
         self.minimal = minimal
         self.setFixedSize(self._icons[0].actualSize(QSize(50, 30)))
 
@@ -68,14 +67,13 @@ class ConsoleDashWidget(IconToolButton):
         self._proxymodel.setSourceModel(self._datamodel)
 
         self._console = None
-        self._rospack = rospkg.RosPack()
         if self._console is None:
-            self._console = ConsoleWidget(self._proxymodel, self._rospack, minimal=self.minimal)
+            self._console = ConsoleWidget(self._proxymodel, minimal=self.minimal)
             self._console.destroyed.connect(self._console_destroyed)
 
         self._message_queue = []
         self._mutex = QMutex()
-        self._subscriber = rospy.Subscriber('/rosout_agg', Log, self._message_cb)
+        self._subscriber = self.node.create_subscription(Log, '/rosout_agg', self._message_cb)
 
         self.context = context
         self.clicked.connect(self._show_console)
@@ -90,7 +88,7 @@ class ConsoleDashWidget(IconToolButton):
 
     def _show_console(self):
         if self._console is None:
-            self._console = ConsoleWidget(self._proxymodel, self._rospack, minimal=self.minimal)
+            self._console = ConsoleWidget(self._proxymodel, minimal=self.minimal)
             self._console.destroyed.connect(self._console_destroyed)
         try:
             if self._console_shown:
@@ -125,8 +123,9 @@ class ConsoleDashWidget(IconToolButton):
 
     def update_rosout(self):
         summary_dur = 30.0
-        if (rospy.get_time() < 30.0):
-            summary_dur = rospy.get_time() - 1.0
+        current_time = self.node.get_clock().now()
+        if (current_time < 30.0):
+            summary_dur = current_time - 1.0
 
         if (summary_dur < 0):
             summary_dur = 0.0
@@ -168,8 +167,6 @@ class ConsoleDashWidget(IconToolButton):
     def shutdown_widget(self):
         if self._console:
             self._console.cleanup_browsers_on_close()
-        if self._subscriber:
-            self._subscriber.unregister()
         self._timer.stop()
 
     def save_settings(self, plugin_settings, instance_settings):

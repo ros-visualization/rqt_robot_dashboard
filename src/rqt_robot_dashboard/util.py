@@ -32,16 +32,14 @@
 
 import os
 
-import rospy
-
 from python_qt_binding.QtGui import QIcon, QImage, QPainter, QPixmap
 from python_qt_binding.QtWidgets import QMessageBox
 from python_qt_binding.QtSvg import QSvgRenderer
 
 
-def dashinfo(msg, obj, title='Info'):
+def dashinfo(logger, msg, obj, title='Info'):
     """
-    Logs a message with ``rospy.loginfo`` and displays a ``QMessageBox`` to the user
+    Logs a message with ``logger.info`` and displays a ``QMessageBox`` to the user
 
     :param msg: Message to display.
     :type msg: str
@@ -50,7 +48,7 @@ def dashinfo(msg, obj, title='Info'):
     :param title: An optional title for the `QMessageBox``
     :type title: str
     """
-    rospy.loginfo(msg)
+    logger.info(msg)
 
     box = QMessageBox()
     box.setText(msg)
@@ -60,9 +58,9 @@ def dashinfo(msg, obj, title='Info'):
     obj._message_box = box
 
 
-def dashwarn(msg, obj, title='Warning'):
+def dashwarn(logger, msg, obj, title='Warning'):
     """
-    Logs a message with ``rospy.logwarn`` and displays a ``QMessageBox`` to the user
+    Logs a message with ``logger.warning`` and displays a ``QMessageBox`` to the user
 
     :param msg: Message to display.
     :type msg: str
@@ -71,7 +69,7 @@ def dashwarn(msg, obj, title='Warning'):
     :param title: An optional title for the `QMessageBox``
     :type title: str
     """
-    rospy.logwarn(msg)
+    logger.warning(msg)
 
     box = QMessageBox()
     box.setText(msg)
@@ -81,9 +79,9 @@ def dashwarn(msg, obj, title='Warning'):
     obj._message_box = box
 
 
-def dasherr(msg, obj, title='Error'):
+def dasherr(logger, msg, obj, title='Error'):
     """
-    Logs a message with ``rospy.logerr`` and displays a ``QMessageBox`` to the user
+    Logs a message with ``logger.error`` and displays a ``QMessageBox`` to the user
 
     :param msg: Message to display.
     :type msg: str
@@ -92,7 +90,7 @@ def dasherr(msg, obj, title='Error'):
     :param title: An optional title for the `QMessageBox``
     :type title: str
     """
-    rospy.logerr(msg)
+    logger.error(msg)
 
     box = QMessageBox()
     box.setText(msg)
@@ -106,7 +104,8 @@ class IconHelper(object):
     """
     Helper class to easily access images and build QIcons out of lists of file names
     """
-    def __init__(self, paths=None, name="IconHelper"):
+    def __init__(self, logger, paths=None, name="IconHelper"):
+        self.logger = logger
         self._image_paths = paths if paths else []
         self._name = name
 
@@ -210,9 +209,9 @@ class IconHelper(object):
         """
         Sets up the icon lists for the button states.
         There must be one index in icons for each state.
-        
+
         :raises IndexError: if ``icons`` is not a list of lists of strings
-        
+
         :param icons: A list of lists of strings to create icons for the states of this button.\
         If only one is supplied then ok, warn, error, stale icons will be created with overlays
         :type icons: list
@@ -222,12 +221,12 @@ class IconHelper(object):
         :type suppress_overlays: bool
         """
         if clicked_icons is not None and len(icons) != len(clicked_icons):
-            rospy.logerr("%s: icons and clicked states are unequal" % self._name)
+            self.logger.error("%s: icons and clicked states are unequal" % self._name)
             icons = clicked_icons = [['ic-missing-icon.svg']]
         if not (type(icons) is list and type(icons[0]) is list and type(icons[0][0] is str)):
             raise(IndexError("icons must be a list of lists of strings"))
         if len(icons) <= 0:
-            rospy.logerr("%s: Icons not supplied" % self._name)
+            self.logger.error("%s: Icons not supplied" % self._name)
             icons = clicked_icons = ['ic-missing-icon.svg']
         if len(icons) == 1 and suppress_overlays == False:
             if icons[0][0][-4].lower() == '.svg':

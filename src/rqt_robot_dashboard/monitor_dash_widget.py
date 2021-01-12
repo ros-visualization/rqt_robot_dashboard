@@ -30,7 +30,6 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import rospy
 from diagnostic_msgs.msg import DiagnosticStatus
 from python_qt_binding.QtCore import QMutex, QMutexLocker, QSize, QTimer, Signal
 from rqt_robot_monitor.robot_monitor import RobotMonitorWidget
@@ -70,7 +69,7 @@ class MonitorDashWidget(IconToolButton):
         self._close_mutex = QMutex()
         self._show_mutex = QMutex()
 
-        self._last_update = rospy.Time.now()
+        self._last_update = context.node.get_clock().now()
 
         self.context = context
         self.clicked.connect(self._show_monitor)
@@ -78,16 +77,17 @@ class MonitorDashWidget(IconToolButton):
         self._monitor_shown = False
         self.setToolTip('Diagnostics')
 
-        self._diagnostics_toplevel_state_sub = rospy.Subscriber(
-                                'diagnostics_toplevel_state',
-                                DiagnosticStatus, self.toplevel_state_callback)
+        self._diagnostics_toplevel_state_sub = context.node.create_subscription(DiagnosticStatus,
+                                                                                'diagnostics_toplevel_state',
+                                                                                self.toplevel_state_callback)
+
         self._top_level_state = -1
         self._stall_timer = QTimer()
         self._stall_timer.timeout.connect(self._stalled)
         self._stalled()
         self._plugin_settings = None
         self._instance_settings = None
-        self._msg_trigger.connect(self._handle_msg_trigger)   
+        self._msg_trigger.connect(self._handle_msg_trigger)
 
     def toplevel_state_callback(self, msg):
         self._is_stale = False
@@ -154,7 +154,6 @@ class MonitorDashWidget(IconToolButton):
         self._stall_timer.stop()
         if self._monitor:
             self._monitor.shutdown()
-        self._diagnostics_toplevel_state_sub.unregister()
 
     def save_settings(self, plugin_settings, instance_settings):
         if self._monitor_shown:
