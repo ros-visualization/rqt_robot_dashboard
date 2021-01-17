@@ -32,9 +32,10 @@
 
 import os
 
+from ament_index_python.packages import get_package_share_directory
+
 from python_qt_binding.QtCore import Signal
 from python_qt_binding.QtWidgets import QToolButton
-import rospy
 
 from .util import IconHelper
 
@@ -73,12 +74,10 @@ class IconToolButton(QToolButton):
         self.pressed.connect(self._pressed)
         self.released.connect(self._released)
 
-        import rospkg
         icon_paths = (icon_paths if icon_paths else []) + [['rqt_robot_dashboard', 'images']]
         paths = []
-        rp = rospkg.RosPack()
         for path in icon_paths:
-            paths.append(os.path.join(rp.get_path(path[0]), path[1]))
+            paths.append(os.path.join(get_package_share_directory(path[0]), path[1]))
         self.icon_helper = IconHelper(paths, name)
         converted_icons = self.icon_helper.set_icon_lists(icons, clicked_icons, suppress_overlays)
         self._icons = converted_icons[0]
