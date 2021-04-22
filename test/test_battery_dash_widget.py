@@ -51,8 +51,8 @@ class TestBatteryDashWidget(unittest.TestCase):
         unittest.TestCase.setUp(self)
         #self._item = TreenodeQstdItem(self._nodename, 0) # For unknown reason this
                                                        # stops operation.
-        self._widget = BatteryDashWidget(self._WIDGET_NAME)
  
+        self._widget = BatteryDashWidget(None, self._WIDGET_NAME)  # Should have a context instead of None
     def tearDown(self):
         #print 'Debug) in tearDown dict: {}'.format(self._widget.__dict__)
 

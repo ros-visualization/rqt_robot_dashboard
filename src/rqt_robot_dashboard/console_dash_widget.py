@@ -56,7 +56,7 @@ class ConsoleDashWidget(IconToolButton):
 
         icons = [ok_icon, warn_icon, err_icon, stale_icon]
 
-        super(ConsoleDashWidget, self).__init__('Console Widget', icons, icon_paths=icon_paths)
+        super(ConsoleDashWidget, self).__init__(context, 'Console Widget', icons, icon_paths=icon_paths)
 
         self.node = context.node
         self.minimal = minimal

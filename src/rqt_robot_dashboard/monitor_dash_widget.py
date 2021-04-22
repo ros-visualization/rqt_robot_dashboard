@@ -60,7 +60,7 @@ class MonitorDashWidget(IconToolButton):
 
         icons = [ok_icon, warn_icon, err_icon, stale_icon]
 
-        super(MonitorDashWidget, self).__init__('MonitorWidget', icons,
+        super(MonitorDashWidget, self).__init__(context, 'MonitorWidget', icons,
                                                 icon_paths=icon_paths)
 
         self.setFixedSize(self._icons[0].actualSize(QSize(50, 30)))
