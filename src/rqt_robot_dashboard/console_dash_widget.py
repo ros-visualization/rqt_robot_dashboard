@@ -73,7 +73,7 @@ class ConsoleDashWidget(IconToolButton):
 
         self._message_queue = []
         self._mutex = QMutex()
-        self._subscriber = self.node.create_subscription(Log, '/rosout_agg', self._message_cb)
+        self._subscriber = self.node.create_subscription(Log, '/rosout_agg', self._message_cb, 10)
 
         self.context = context
         self.clicked.connect(self._show_console)

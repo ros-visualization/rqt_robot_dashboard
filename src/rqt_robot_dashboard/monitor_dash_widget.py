@@ -79,7 +79,7 @@ class MonitorDashWidget(IconToolButton):
 
         self._diagnostics_toplevel_state_sub = context.node.create_subscription(DiagnosticStatus,
                                                                                 'diagnostics_toplevel_state',
-                                                                                self.toplevel_state_callback)
+                                                                                self.toplevel_state_callback, 10)
 
         self._top_level_state = -1
         self._stall_timer = QTimer()
