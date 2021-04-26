@@ -93,17 +93,19 @@ class MonitorDashWidget(IconToolButton):
         self._is_stale = False
         self._msg_trigger.emit()
 
-        if self._top_level_state != msg.level:
-            if (msg.level >= 2):
+        level = int.from_bytes(msg.level, byteorder='big')
+
+        if self._top_level_state != level:
+            if (level >= 2):
                 self.update_state(2)
                 self.setToolTip("Diagnostics: Error")
-            elif (msg.level == 1):
+            elif (level == 1):
                 self.update_state(1)
                 self.setToolTip("Diagnostics: Warning")
             else:
                 self.update_state(0)
                 self.setToolTip("Diagnostics: OK")
-            self._top_level_state = msg.level
+            self._top_level_state = level
 
     def _handle_msg_trigger(self):
         self._stall_timer.start(5000)
