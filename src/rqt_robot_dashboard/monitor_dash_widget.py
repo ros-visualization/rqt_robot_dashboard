@@ -60,7 +60,7 @@ class MonitorDashWidget(IconToolButton):
 
         icons = [ok_icon, warn_icon, err_icon, stale_icon]
 
-        super(MonitorDashWidget, self).__init__('MonitorWidget', icons,
+        super(MonitorDashWidget, self).__init__(context, 'MonitorWidget', icons,
                                                 icon_paths=icon_paths)
 
         self.setFixedSize(self._icons[0].actualSize(QSize(50, 30)))
@@ -79,7 +79,7 @@ class MonitorDashWidget(IconToolButton):
 
         self._diagnostics_toplevel_state_sub = context.node.create_subscription(DiagnosticStatus,
                                                                                 'diagnostics_toplevel_state',
-                                                                                self.toplevel_state_callback)
+                                                                                self.toplevel_state_callback, 10)
 
         self._top_level_state = -1
         self._stall_timer = QTimer()
@@ -93,17 +93,19 @@ class MonitorDashWidget(IconToolButton):
         self._is_stale = False
         self._msg_trigger.emit()
 
-        if self._top_level_state != msg.level:
-            if (msg.level >= 2):
+        level = int.from_bytes(msg.level, byteorder='big')
+
+        if self._top_level_state != level:
+            if (level >= 2):
                 self.update_state(2)
                 self.setToolTip("Diagnostics: Error")
-            elif (msg.level == 1):
+            elif (level == 1):
                 self.update_state(1)
                 self.setToolTip("Diagnostics: Warning")
             else:
                 self.update_state(0)
                 self.setToolTip("Diagnostics: OK")
-            self._top_level_state = msg.level
+            self._top_level_state = level
 
     def _handle_msg_trigger(self):
         self._stall_timer.start(5000)

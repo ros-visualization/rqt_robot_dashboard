@@ -64,7 +64,7 @@ class IconToolButton(QToolButton):
     """
     state_changed = Signal(int)
 
-    def __init__(self, name, icons, clicked_icons=None, suppress_overlays=False, icon_paths=None):
+    def __init__(self, context, name, icons, clicked_icons=None, suppress_overlays=False, icon_paths=None):
         super(IconToolButton, self).__init__()
 
         self.name = name
@@ -78,7 +78,7 @@ class IconToolButton(QToolButton):
         paths = []
         for path in icon_paths:
             paths.append(os.path.join(get_package_share_directory(path[0]), path[1]))
-        self.icon_helper = IconHelper(paths, name)
+        self.icon_helper = IconHelper(context, paths, name)
         converted_icons = self.icon_helper.set_icon_lists(icons, clicked_icons, suppress_overlays)
         self._icons = converted_icons[0]
         self._clicked_icons = converted_icons[1]
