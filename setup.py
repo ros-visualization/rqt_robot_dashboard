@@ -17,8 +17,8 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     author="Ze'ev Klapow",
-    maintainer='Aaron Blasdel',
-    maintainer_email='ablasdel@gmail.com',
+    maintainer='David V. Lu!!',
+    maintainer_email='davidvlu@gmail.com',
     description=(
         'rqt_robot_dashboard provides an infrastructure for building robot dashboard plugins in rqt.'
     ),
