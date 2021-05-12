@@ -31,6 +31,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from python_qt_binding.QtCore import QMutex, QMutexLocker, QSize
+# Note: rqt_nav_view has not been migrated to ROS2 yet
 from rqt_nav_view.nav_view import NavViewWidget
 
 from .icon_tool_button import IconToolButton
