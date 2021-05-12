@@ -104,8 +104,8 @@ class IconHelper(object):
     """
     Helper class to easily access images and build QIcons out of lists of file names
     """
-    def __init__(self, logger, paths=None, name="IconHelper"):
-        self.logger = logger
+    def __init__(self, context, paths=None, name="IconHelper"):
+        self.logger = context.node.get_logger()
         self._image_paths = paths if paths else []
         self._name = name
 

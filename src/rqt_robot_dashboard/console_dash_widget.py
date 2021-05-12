@@ -56,7 +56,7 @@ class ConsoleDashWidget(IconToolButton):
 
         icons = [ok_icon, warn_icon, err_icon, stale_icon]
 
-        super(ConsoleDashWidget, self).__init__('Console Widget', icons, icon_paths=icon_paths)
+        super(ConsoleDashWidget, self).__init__(context, 'Console Widget', icons, icon_paths=icon_paths)
 
         self.node = context.node
         self.minimal = minimal
@@ -73,7 +73,7 @@ class ConsoleDashWidget(IconToolButton):
 
         self._message_queue = []
         self._mutex = QMutex()
-        self._subscriber = self.node.create_subscription(Log, '/rosout_agg', self._message_cb)
+        self._subscriber = self.node.create_subscription(Log, '/rosout_agg', self._message_cb, 10)
 
         self.context = context
         self.clicked.connect(self._show_console)
