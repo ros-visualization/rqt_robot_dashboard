@@ -7,6 +7,7 @@
   <version>0.5.8</version>
   <description>rqt_robot_dashboard provides an infrastructure for building robot dashboard plugins in rqt.</description>
   <maintainer email="ablasdel@gmail.com">Aaron Blasdel</maintainer>
+  <maintainer email="arne.hitzmann@gmail.com">Arne Hitzmann</maintainer>
 
   <license>BSD</license>
 
