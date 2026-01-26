@@ -18,7 +18,7 @@ setup(
     zip_safe=True,
     author="Ze'ev Klapow",
     maintainer='David V. Lu!!',
-    maintainer_email='davidvlu@gmail.com',
+    maintainer_email='david@metrorobots.com',
     description=(
         'rqt_robot_dashboard provides an infrastructure for building robot dashboard plugins in rqt.'
     ),
